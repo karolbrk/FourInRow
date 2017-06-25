@@ -13,7 +13,7 @@ void Game::initGame() {
 
     std::cout << "Podaj imie pierwszego gracza: ";
     std::cin >> name1;
-    token1 = readToken("Podaj token (znak) pierwszego gracza: ");
+    token1 = readToken("Podaj token (znak) pierwszego gracza (o lub x): ");
 
     for(;;) {
         std::cout << "Podaj imie drugiego gracza: ";
@@ -24,15 +24,8 @@ void Game::initGame() {
             std::cout << "Sprobuj jeszcze raz!\n";
             continue;
         }
-        for(;;) {
-            token2 = readToken("Podaj token (znak) drugiego gracza: ");
-            if(token1 == token2) {
-                std::cout << "Drugi gracz powinien miec inny znak zetonu!\n";
-                std::cout << "Sprobuj jeszcze raz!\n";
-                continue;
-            }
-            break;
-        }
+        token2 = token1 == 'x' ? 'o' : 'x';
+        std::cout << "Token gracza " << name2 << " to: " << token2 << std::endl;
         break;
     }
     players[0] = Player(name1, token1);
@@ -47,9 +40,10 @@ char Game::readToken(const std::string& message) const {
         std::cout << message;
         std::cin >> token;
         if(std::cin) {
+        	if (token == 'x' || token == 'o')
             break;
         }
-        std::cout << "Podaj znak!\n";
+        std::cout << "Podaj znak o lub x!\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -87,9 +81,24 @@ void Game::nextMove() {
       }
    }
     board.show();
+
+    const Player * winPlayer = whoWin();
+    if (winPlayer) {
+        std::cout << "Wygrał gracz " << winPlayer->getName() << ". Gratulacje!!!" << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+
     swapPlayer();
 }
 
-Player * Game::whoWin() const {
+const Player * Game::whoWin() const {
+    const char winToken = board.whichWin();
+
+    for (auto& player : players) {
+        if (player.getToken() == winToken) {
+            return &player;
+        }
+    }
+
     return nullptr;
 }
