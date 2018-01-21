@@ -6,7 +6,7 @@ class Board {
     public:
         Board();
         void show() const;
-        bool insert(unsigned column_index, char token);
+        bool insert(unsigned column_index, const char token);
         void clean();
         char whichWin() const;
     private:

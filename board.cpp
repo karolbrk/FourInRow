@@ -17,7 +17,7 @@ void Board::show() const {
     }
 }
 
-bool Board::insert(unsigned col, char token) {
+bool Board::insert(unsigned col, const char token) {
     if (col > 7) {
         return false;
     }
